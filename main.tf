@@ -1,9 +1,10 @@
+
 # =====================================================
 # Fetching Az Names
 # =====================================================
 
 data "aws_availability_zones" "az" {
-
+    
   state = "available"
 
 }
@@ -14,10 +15,11 @@ data "aws_availability_zones" "az" {
 # =====================================================
 
 resource "aws_vpc" "vpc" {
+    
   cidr_block           = var.vpc_cidr
   instance_tenancy     = "default"
   enable_dns_support   = true
-  enable_dns_hostnames = true
+  enable_dns_hostnames = true  
   tags = {
     Name = "${var.project}-vpc"
     project = var.project
@@ -33,13 +35,13 @@ resource "aws_vpc" "vpc" {
 # =====================================================
 
 resource "aws_internet_gateway" "igw" {
-
+    
   vpc_id = aws_vpc.vpc.id
   tags = {
     Name = "${var.project}-igw"
     project = var.project
   }
-
+    
 }
 
 # =====================================================
@@ -47,9 +49,9 @@ resource "aws_internet_gateway" "igw" {
 # =====================================================
 
 resource "aws_subnet" "public1" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
-  cidr_block               = cidrsubnet(var.vpc_cidr,3,0)
+  cidr_block               = cidrsubnet(var.vpc_cidr,3,0)                        
   map_public_ip_on_launch  = true
   availability_zone        = data.aws_availability_zones.az.names[0]
   tags = {
@@ -64,7 +66,7 @@ resource "aws_subnet" "public1" {
 # =====================================================
 
 resource "aws_subnet" "public2" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = cidrsubnet(var.vpc_cidr,3,1)
   map_public_ip_on_launch  = true
@@ -82,7 +84,7 @@ resource "aws_subnet" "public2" {
 # =====================================================
 
 resource "aws_subnet" "public3" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = cidrsubnet(var.vpc_cidr,3,2)
   map_public_ip_on_launch  = true
@@ -98,7 +100,7 @@ resource "aws_subnet" "public3" {
 # =====================================================
 
 resource "aws_subnet" "private1" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = cidrsubnet(var.vpc_cidr,3,3)
   map_public_ip_on_launch  = false
@@ -114,7 +116,7 @@ resource "aws_subnet" "private1" {
 # =====================================================
 
 resource "aws_subnet" "private2" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = cidrsubnet(var.vpc_cidr,3,4)
   map_public_ip_on_launch  = false
@@ -131,7 +133,7 @@ resource "aws_subnet" "private2" {
 # =====================================================
 
 resource "aws_subnet" "private3" {
-
+    
   vpc_id                   = aws_vpc.vpc.id
   cidr_block               = cidrsubnet(var.vpc_cidr,3,5)
   map_public_ip_on_launch  = false
@@ -159,7 +161,7 @@ resource "aws_eip" "eip" {
 
 
 resource "aws_nat_gateway" "nat" {
-
+    
   allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.public2.id
 
@@ -174,7 +176,7 @@ resource "aws_nat_gateway" "nat" {
 # RouteTable Creation public
 # =====================================================
 resource "aws_route_table" "public" {
-
+    
   vpc_id = aws_vpc.vpc.id
 
   route {
@@ -193,7 +195,7 @@ resource "aws_route_table" "public" {
 # RouteTable Creation Private
 # =====================================================
 resource "aws_route_table" "private" {
-
+    
   vpc_id = aws_vpc.vpc.id
 
   route {
