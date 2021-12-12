@@ -9,6 +9,15 @@ data "aws_availability_zones" "az" {
 
 }
 
+data "aws_subnet_ids" "subnetsPub" {
+  vpc_id = aws_vpc.vpc.id  
+
+  tags = {
+    Tier = "Public"
+  }
+ depends_on = [aws_subnet.public01, aws_subnet.public02, aws_subnet.public03 ] 
+}
+
 
 # =====================================================
 # vpc Creation
